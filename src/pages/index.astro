@@ -7,6 +7,7 @@ import ProjectCard from '../components/ProjectCard.astro';
 import { getCollection } from 'astro:content';
 import { contacto } from '../data/site.js';
 import { svgLogo, svgSqlDatabase } from '../data/logos.js';
+import { fotoJose } from '../data/foto.js';
 
 // Proyectos ordenados por el campo "orden"; en la portada se muestran 2
 const proyectos = (await getCollection('proyectos')).sort((a, b) => a.data.orden - b.data.orden);
@@ -49,20 +50,11 @@ const stack = [
       </div>
     </div>
 
-    <!-- Ventana de código decorativa -->
-    <div class="code" aria-label="Ejemplo de consulta SQL decorativa">
-      <div class="code-bar">
-        <span></span><span></span><span></span>
-        <em>consulta.sql</em>
-      </div>
-<pre><b>WITH</b> datos <b>AS</b> (
-  <b>SELECT</b> * <b>FROM</b> operaciones
-)
-<b>SELECT</b> insight
-<b>FROM</b> datos
-<b>WHERE</b> decision <b>IS NOT NULL</b>;
-<i>-- 1 fila: lo que importa</i></pre>
-    </div>
+    <!-- Foto de José con una etiqueta de disponibilidad -->
+    <figure class="photo">
+      <img src={fotoJose} alt="José Barra presentando un proyecto frente a una audiencia" width="320" height="400" />
+      <figcaption class="status"><span class="dot"></span>Disponible para trabajar</figcaption>
+    </figure>
   </section>
 
   <!-- ===== Proyectos destacados ===== -->
@@ -150,13 +142,20 @@ const stack = [
   .hero p { margin: 0; font-size: 19px; line-height: 1.6; color: var(--muted); max-width: 620px; }
   .actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
-  .code { flex: 1 1 340px; min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
-  .code-bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
-  .code-bar span { width: 8px; height: 8px; border-radius: 50%; background: var(--line-strong); }
-  .code-bar em { margin-left: 8px; font-style: normal; font-family: var(--font-mono); font-size: 12px; color: var(--muted-2); }
-  .code pre { margin: 0; padding: 22px 20px; font-family: var(--font-mono); font-size: 14px; line-height: 1.8; color: var(--text-2); white-space: pre-wrap; }
-  .code b { color: var(--accent-2); font-weight: 400; }
-  .code i { color: var(--muted-2); font-style: normal; }
+  /* Foto de la portada */
+  .photo { position: relative; flex: 1 1 280px; max-width: 360px; margin: 0 auto; }
+  .photo img {
+    display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover;
+    border-radius: 16px; border: 1px solid var(--line-strong);
+  }
+  /* Etiqueta "Disponible para trabajar" sobre la esquina inferior de la foto */
+  .status {
+    position: absolute; left: 16px; bottom: 16px;
+    display: flex; align-items: center; gap: 8px; padding: 8px 14px;
+    background: var(--bg); border: 1px solid var(--line-strong); border-radius: 999px;
+    font-size: 13px; font-weight: 500; color: var(--text);
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #3DDC84; box-shadow: 0 0 0 4px rgba(61, 220, 132, .15); }
 
   .section { padding-top: 120px; padding-bottom: 40px; display: flex; flex-direction: column; gap: 40px; }
   .section-head { display: flex; flex-direction: column; gap: 12px; }
