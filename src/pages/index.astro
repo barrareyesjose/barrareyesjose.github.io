@@ -6,16 +6,15 @@ import Base from '../layouts/Base.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import { getCollection } from 'astro:content';
 import { contacto } from '../data/site.js';
-import { svgLogo } from '../data/logos.js';
+import { svgLogo, svgSqlDatabase } from '../data/logos.js';
 
 // Proyectos ordenados por el campo "orden"; en la portada se muestran 2
 const proyectos = (await getCollection('proyectos')).sort((a, b) => a.data.orden - b.data.orden);
 const destacados = proyectos.slice(0, 2);
 
 // Herramientas del stack, con sus logos oficiales (ver src/data/logos.js).
-// SQL no tiene logo propio, así que se muestran los motores con los que trabajo.
 const stack = [
-  { nombre: 'SQL', logos: [{ svg: svgLogo('logos', 'postgresql'), alt: 'PostgreSQL' }, { svg: svgLogo('logos', 'mariadb-icon'), alt: 'MariaDB' }],
+  { nombre: 'SQL', logos: [{ svg: svgSqlDatabase, alt: 'Base de datos SQL' }],
     detalle: 'PostgreSQL, MariaDB y DBeaver. JOINs, CTEs, funciones de ventana, vistas y procedimientos almacenados.' },
   { nombre: 'Power BI', logos: [{ svg: svgLogo('logos', 'microsoft-power-bi'), alt: 'Power BI' }],
     detalle: 'Modelado en estrella y dashboards para seguimiento de indicadores.' },
