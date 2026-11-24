@@ -1,0 +1,262 @@
+---
+// src/components/ScrollStory.astro
+// Animación narrativa controlada por el scroll:
+//   1 base de datos → se desmenuza en fragmentos → 3 tablas →
+//   8 archivos → 1 consulta → 4 insights.
+//
+// Cómo funciona:
+//  - La sección es muy alta (4600px) y contiene un "escenario" con
+//    position: sticky, que queda fijo en pantalla mientras se baja.
+//  - Un script calcula el avance P (de 0 a 1) dentro de la sección y
+//    mueve cada elemento según ese avance. Todo se mueve con transform y
+//    opacity, que el navegador anima sin recalcular el layout (fluido).
+//
+// Este archivo solo define el HTML y el CSS. La lógica está en
+// src/scripts/scroll-story.js.
+
+// Cantidades de cada pieza (deben coincidir con el script)
+const PARTICULAS = 60;
+
+// Tablas en las que aterrizan los fragmentos
+const tablas = [
+  { nombre: 'fact_tickets', columnas: 'id_ticket · fecha · estado · canal' },
+  { nombre: 'dim_cliente', columnas: 'id_cliente · región · segmento · tipo' },
+  { nombre: 'fact_despachos', columnas: 'id_orden · lpn · fecha · otif' },
+];
+
+// Archivos que resultan del trabajo sobre las tablas
+const archivos = [
+  { nombre: 'tickets.csv', tipo: 'CSV' },
+  { nombre: 'modelo_estrella.pbix', tipo: 'PBIX' },
+  { nombre: 'kpi_otif.sql', tipo: 'SQL' },
+  { nombre: '01_eda.ipynb', tipo: 'IPYNB' },
+  { nombre: 'fill_rate.sql', tipo: 'SQL' },
+  { nombre: '04_modelo.ipynb', tipo: 'IPYNB' },
+  { nombre: 'despachos.csv', tipo: 'CSV' },
+  { nombre: 'reporte.xlsx', tipo: 'XLSX' },
+];
+
+const pilares = ['Recep', 'Invent', 'Desp', 'Fact', 'Ciclo'];
+const notebooks = ['EDA', 'Tests', 'NLP', 'Modelo'];
+const pasos = ['1 base', '3 tablas', '8 archivos', '4 insights'];
+---
+<section id="proceso" class="story" aria-labelledby="story-title" data-story>
+  <div class="stage">
+    <!-- Texto que cambia según la etapa -->
+    <div class="container caption-row">
+      <div class="caption">
+        <div class="eyebrow" data-cap-num>01 — La fuente</div>
+        <h2 id="story-title" data-cap-title>Todo empieza en una base de datos.</h2>
+        <p data-cap-text>Millones de registros sin contexto. Antes de analizar, hay que desarmarla.</p>
+      </div>
+      <!-- Indicador de etapas: 1 base → 3 tablas → 8 archivos → 4 insights -->
+      <ol class="steps" aria-label="Etapas: 1 base, 3 tablas, 8 archivos, 4 insights">
+        {pasos.map((p) => (
+          <li data-step>
+            <span class="step-track"><span class="step-fill" data-step-fill></span></span>
+            <span class="step-label">{p}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <!-- Lienzo de la animación (decorativo para lectores de pantalla) -->
+    <div class="canvas" aria-hidden="true" data-canvas>
+      <!-- Líneas de flujo desde los archivos hacia la consulta central -->
+      <svg class="lines" viewBox="-600 -320 1200 640" data-lines>
+        {archivos.map(() => <line x1="0" y1="0" x2="0" y2="0" data-line />)}
+      </svg>
+
+      <!-- Base de datos: sombra + 4 discos apilados -->
+      <div class="piece db-shadow" data-shadow></div>
+      {[0, 1, 2, 3].map((i) => (
+        <div class="piece disk" data-disk={i} style={`z-index:${10 - i}`}>
+          <div class="disk-body"></div>
+          <div class="disk-top"></div>
+          <div class="disk-leds">
+            <span></span><span data-led></span><span></span>
+          </div>
+        </div>
+      ))}
+      <div class="piece db-label" data-dblabel>postgres · db_operaciones · millones de filas</div>
+
+      <!-- Marcos de tablas (las celdas son los fragmentos) -->
+      {tablas.map((t) => (
+        <div class="piece table" data-table>
+          <div class="table-name">{t.nombre}</div>
+          <div class="table-cols">{t.columnas}</div>
+        </div>
+      ))}
+
+      <!-- Fragmentos: celdas que salen de la base y vuelven a ordenarse -->
+      {Array.from({ length: PARTICULAS }).map(() => <div class="piece particle" data-particle></div>)}
+
+      <!-- Archivos -->
+      {archivos.map((a) => (
+        <div class="piece file" data-file>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8796A5" stroke-width="1.6"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"></path><path d="M14 3v5h5"></path></svg>
+          <span class="file-name">{a.nombre}</span>
+          <span class="file-kind">{a.tipo}</span>
+        </div>
+      ))}
+
+      <!-- Consulta central donde convergen los archivos -->
+      <div class="piece node" data-node>
+        <span class="dot"></span>
+        <span><b>SELECT</b> · <b>JOIN</b> · <b>GROUP BY</b></span>
+      </div>
+
+      <!-- Insights finales -->
+      <div class="piece insight" data-insight>
+        <div class="ins-label">AUC · MODELO PREDICTIVO</div>
+        <div class="ins-value accent" data-auc>0,000</div>
+        <div class="ins-sub">+9,3 pp sobre el baseline</div>
+      </div>
+      <div class="piece insight" data-insight>
+        <div class="ins-label">VOLUMEN ANALIZADO</div>
+        <div class="ins-value" data-tickets>~0</div>
+        <div class="ins-sub">tickets de soporte</div>
+      </div>
+      <div class="piece insight" data-insight>
+        <div class="ins-label">DIAGNÓSTICO O2D · 5 PILARES</div>
+        <div class="pillars">
+          {pilares.map((p) => (
+            <div class="pillar"><div class="pillar-bar" data-pillar></div><span>{p}</span></div>
+          ))}
+        </div>
+      </div>
+      <div class="piece insight" data-insight>
+        <div class="ins-label">PIPELINE ANALÍTICO · 4 NOTEBOOKS</div>
+        <div class="nb">
+          <div class="nb-track"></div>
+          <div class="nb-fill" data-nb-line></div>
+          <div class="nb-dots">
+            {notebooks.map((n) => (
+              <div class="nb-item" data-nb><span class="nb-dot"></span><span class="nb-label">{n}</span></div>
+            ))}
+          </div>
+        </div>
+        <div class="ins-sub">del EDA al modelo con SHAP</div>
+      </div>
+
+      <div class="hint" data-hint>sigue bajando ↓</div>
+      <div class="end" data-end>Del dato a la decisión.</div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import '../scripts/scroll-story.js';
+</script>
+
+<style>
+  /* La sección es alta para que haya "recorrido" de scroll */
+  .story { position: relative; height: 4600px; border-top: 1px solid #1C2733; }
+
+  /* Escenario fijo: ocupa la pantalla bajo el header */
+  .stage {
+    position: sticky; top: var(--header-h);
+    height: min(calc(100vh - var(--header-h)), 900px); min-height: 600px;
+    overflow: hidden; display: flex; flex-direction: column;
+    background-color: var(--bg);
+    /* Cuadrícula de fondo hecha con dos gradientes de 1px */
+    background-image:
+      linear-gradient(var(--surface-2) 1px, transparent 1px),
+      linear-gradient(90deg, var(--surface-2) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .caption-row {
+    width: 100%; padding-top: 40px; position: relative; z-index: 30;
+    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px;
+  }
+  .caption { display: flex; flex-direction: column; gap: 10px; max-width: 580px; background: var(--bg); padding: 4px 8px 4px 0; }
+  .caption h2 { font-size: clamp(26px, 3.4vw, 42px); line-height: 1.1; }
+  .caption p { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.6; min-height: 52px; }
+
+  .steps { list-style: none; margin: 0; padding: 6px 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; width: 360px; max-width: 100%; background: var(--bg); }
+  .steps li { display: flex; flex-direction: column; gap: 8px; }
+  .step-track { height: 3px; background: var(--line); border-radius: 2px; overflow: hidden; display: block; }
+  .step-fill { height: 3px; width: 0; background: var(--accent); display: block; }
+  .step-label { font-family: var(--font-mono); font-size: 11px; color: var(--muted-2); }
+  .steps li.is-current .step-label { color: var(--text); }
+
+  /* Lienzo: todas las piezas se posicionan desde su centro */
+  .canvas { position: relative; flex: 1 1 auto; min-height: 400px; }
+  .piece {
+    position: absolute; left: 50%; top: 50%;
+    opacity: 0;
+    will-change: transform, opacity; /* pista de rendimiento al navegador */
+  }
+
+  .lines { position: absolute; left: 50%; top: 50%; width: 1200px; height: 640px; transform: translate(-50%, -50%); overflow: visible; opacity: 0; }
+  .lines line { stroke: var(--accent); stroke-width: 1.2; stroke-dasharray: 3 7; stroke-opacity: .7; }
+
+  .db-shadow { width: 300px; height: 60px; border-radius: 50%; background: #0F151C; border: 1px solid #16202A; }
+  .disk { width: 260px; height: 84px; opacity: 1; }
+  .disk-body {
+    position: absolute; left: 0; right: 0; top: 22px; bottom: 0;
+    border-radius: 0 0 130px 130px / 0 0 22px 22px;
+    background: #121922; border: 1.5px solid var(--accent); border-top: none;
+  }
+  .disk-top { position: absolute; left: 0; right: 0; top: 0; height: 44px; border-radius: 50%; background: #18222D; border: 1.5px solid var(--accent); }
+  .disk-leds { position: absolute; left: 34px; right: 34px; top: 56px; display: flex; gap: 6px; }
+  .disk-leds span { height: 4px; border-radius: 2px; background: var(--line-strong); flex: 2; }
+  .disk-leds span:first-child { flex: 3; }
+  .disk-leds span[data-led] { flex: 1; }
+  .disk-leds span.on { background: var(--accent); }
+  .db-label { font-family: var(--font-mono); font-size: 13px; color: var(--muted-2); white-space: nowrap; }
+
+  .table {
+    width: 296px; height: 206px; padding: 14px 16px; border: 1px solid var(--line-strong); border-radius: 10px;
+    background: #0E141B; display: flex; flex-direction: column; gap: 6px;
+  }
+  .table-name { font-family: var(--font-mono); font-size: 13px; color: var(--accent); font-weight: 500; }
+  .table-cols { font-family: var(--font-mono); font-size: 11px; color: var(--muted-2); padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+
+  .particle { width: 52px; height: 10px; border-radius: 3px; background: var(--accent); z-index: 5; }
+
+  .file {
+    z-index: 6; display: flex; align-items: center; gap: 10px; padding: 10px 14px; white-space: nowrap;
+    background: var(--surface); border: 1px solid var(--line-strong); border-radius: 8px;
+  }
+  .file-name { font-family: var(--font-mono); font-size: 13px; }
+  .file-kind { font-family: var(--font-mono); font-size: 10px; color: var(--accent-2); border: 1px solid #4A3A1E; border-radius: 4px; padding: 2px 6px; }
+
+  .node {
+    z-index: 8; display: flex; align-items: center; gap: 10px; padding: 14px 20px; white-space: nowrap;
+    background: var(--bg); border: 1.5px solid var(--accent); border-radius: 999px;
+    font-family: var(--font-mono); font-size: 14px;
+  }
+  .node b { color: var(--accent-2); font-weight: 500; }
+  .node .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+
+  .insight {
+    z-index: 9; width: 240px; height: 180px; padding: 20px;
+    background: var(--surface); border: 1px solid var(--line-strong); border-radius: 12px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .ins-label { font-family: var(--font-mono); font-size: 11px; color: var(--muted-2); }
+  .ins-value { font-family: var(--font-display); font-size: 48px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .ins-value.accent { color: var(--accent); }
+  .ins-sub { font-size: 13px; color: var(--muted); }
+
+  .pillars { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; align-items: end; height: 92px; }
+  .pillar { display: flex; flex-direction: column; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 9px; color: var(--muted-2); }
+  .pillar-bar { width: 100%; height: 4px; background: var(--accent); border-radius: 3px 3px 0 0; }
+
+  .nb { position: relative; height: 50px; }
+  .nb-track, .nb-fill { position: absolute; left: 8px; top: 9px; height: 2px; }
+  .nb-track { right: 8px; background: var(--line-strong); }
+  .nb-fill { width: 0; background: var(--accent); }
+  .nb-dots { position: absolute; inset: 0; display: flex; justify-content: space-between; }
+  .nb-item { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 40px; }
+  .nb-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line-strong); background: var(--surface); position: relative; }
+  .nb-label { font-family: var(--font-mono); font-size: 10px; color: var(--muted-2); }
+  .nb-item.on .nb-dot { border-color: var(--accent); background: var(--accent); }
+  .nb-item.on .nb-label { color: var(--text); }
+
+  .hint, .end { position: absolute; left: 50%; transform: translateX(-50%); white-space: nowrap; background: var(--bg); }
+  .hint { bottom: 24px; padding: 4px 10px; font-family: var(--font-mono); font-size: 12px; color: var(--muted-2); }
+  .end { bottom: 40px; padding: 4px 12px; font-family: var(--font-display); font-size: 22px; font-weight: 600; opacity: 0; }
+</style>
