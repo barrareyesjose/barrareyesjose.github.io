@@ -52,7 +52,7 @@ const stack = [
 
     <!-- Foto de José con una etiqueta de disponibilidad -->
     <figure class="photo">
-      <img src={fotoJose} alt="José Barra presentando un proyecto frente a una audiencia" width="320" height="400" />
+      <img src={fotoJose} alt="José Barra presentando un proyecto frente a una audiencia" width="512" height="512" />
       <figcaption class="status"><span class="dot"></span>Disponible para trabajar</figcaption>
     </figure>
   </section>
@@ -142,16 +142,18 @@ const stack = [
   .hero p { margin: 0; font-size: 19px; line-height: 1.6; color: var(--muted); max-width: 620px; }
   .actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
-  /* Foto de la portada */
-  .photo { position: relative; flex: 1 1 280px; max-width: 360px; margin: 0 auto; }
+  /* Foto de la portada: imagen completa recortada en círculo */
+  .photo { position: relative; flex: 1 1 300px; max-width: 400px; margin: 0 auto; padding-bottom: 20px; }
   .photo img {
-    display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover;
-    border-radius: 16px; border: 1px solid var(--line-strong);
+    display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover;
+    border-radius: 50%;                       /* recorte circular */
+    border: 1px solid var(--line-strong);
+    box-shadow: 0 0 0 8px var(--bg), 0 0 0 9px var(--line); /* anillo exterior sutil */
   }
-  /* Etiqueta "Disponible para trabajar" sobre la esquina inferior de la foto */
+  /* Etiqueta "Disponible para trabajar", centrada bajo el círculo */
   .status {
-    position: absolute; left: 16px; bottom: 16px;
-    display: flex; align-items: center; gap: 8px; padding: 8px 14px;
+    position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 8px; padding: 8px 14px; white-space: nowrap;
     background: var(--bg); border: 1px solid var(--line-strong); border-radius: 999px;
     font-size: 13px; font-weight: 500; color: var(--text);
   }
