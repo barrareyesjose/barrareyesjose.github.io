@@ -1,0 +1,70 @@
+---
+// src/layouts/Base.astro
+// Plantilla común a todas las páginas: <head>, header, footer y estilos.
+// Cada página la usa así:  <Base title="..." description="..."> contenido </Base>
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+// Propiedades que recibe la plantilla (con valores por defecto)
+interface Props {
+  title?: string;
+  description?: string;
+}
+const {
+  title = 'José Barra · Analista de Datos y BI',
+  description = 'Portafolio de análisis de datos y business intelligence de José Barra: SQL, Power BI y Python.',
+} = Astro.props;
+
+// URL canónica de la página actual (usa `site` de astro.config.mjs)
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- Vista previa al compartir el link (LinkedIn, WhatsApp, etc.) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta name="theme-color" content="#0B0F14" />
+
+  <!-- Tipografías de Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+  />
+</head>
+<body>
+  <a class="skip" href="#contenido">Saltar al contenido</a>
+  <Header />
+  <main id="contenido">
+    <slot />
+  </main>
+  <Footer />
+
+  <!-- Script de aparición suave de secciones (se carga en todas las páginas) -->
+  <script>
+    import '../scripts/reveal.js';
+  </script>
+</body>
+</html>
+
+<style>
+  /* Enlace oculto que aparece al navegar con Tab: accesibilidad */
+  .skip {
+    position: absolute; left: 12px; top: -48px; z-index: 100;
+    background: var(--accent); color: var(--bg); padding: 10px 14px; border-radius: 6px;
+    font-weight: 600; text-decoration: none;
+  }
+  .skip:focus { top: 12px; }
+</style>

@@ -1,0 +1,54 @@
+---
+// src/components/ProjectCard.astro
+// Tarjeta de proyecto. Se usa en la portada y en /proyectos/.
+// Recibe una entrada de la colección "proyectos" (ver content.config.ts).
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  proyecto: CollectionEntry<'proyectos'>;
+}
+const { proyecto } = Astro.props;
+const { titulo, resumen, etiquetas, metricas, estado } = proyecto.data;
+const href = `/proyectos/${proyecto.id}/`;
+---
+<article class="card">
+  <div class="chips">
+    {etiquetas.map((e) => <span class="chip">{e}</span>)}
+    {estado && <span class="chip estado">{estado}</span>}
+  </div>
+  <h3><a href={href} class="stretched">{titulo}</a></h3>
+  <p>{resumen}</p>
+  {metricas.length > 0 && (
+    <dl class="metrics">
+      {metricas.map((m) => (
+        <div>
+          <dt>{m.etiqueta}</dt>
+          <dd>{m.valor}</dd>
+        </div>
+      ))}
+    </dl>
+  )}
+  <span class="more" aria-hidden="true">Ver caso de estudio →</span>
+</article>
+
+<style>
+  .card {
+    position: relative; /* necesario para que el enlace cubra toda la tarjeta */
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 36px; display: flex; flex-direction: column; gap: 20px;
+    transition: border-color .2s ease, transform .2s ease;
+  }
+  .card:hover { border-color: var(--line-strong); transform: translateY(-2px); }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .estado { color: var(--accent-2); border-color: #4A3A1E; }
+  h3 { font-size: 30px; letter-spacing: -0.01em; }
+  h3 a { color: var(--text); text-decoration: none; }
+  /* El enlace del título se "estira" para que toda la tarjeta sea clicable */
+  .stretched::after { content: ''; position: absolute; inset: 0; border-radius: 14px; }
+  p { margin: 0; font-size: 16px; line-height: 1.65; color: var(--muted); }
+  .metrics { display: flex; gap: 28px; margin: auto 0 0; padding-top: 16px; border-top: 1px solid var(--line); }
+  .metrics div { display: flex; flex-direction: column-reverse; }
+  .metrics dd { margin: 0; font-family: var(--font-display); font-size: 28px; font-weight: 600; color: var(--accent); }
+  .metrics dt { font-size: 13px; color: var(--muted-2); }
+  .more { font-weight: 600; font-size: 15px; color: var(--accent); }
+</style>

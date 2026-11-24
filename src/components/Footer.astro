@@ -1,0 +1,19 @@
+---
+// src/components/Footer.astro
+// Pie de página común. El año se calcula al compilar el sitio.
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="container inner">
+    <span>© {year} José Barra</span>
+    <span>SELECT * FROM ideas WHERE útiles = TRUE;</span>
+  </div>
+</footer>
+
+<style>
+  .site-footer { border-top: 1px solid #1C2733; }
+  .inner {
+    padding: 28px 24px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    font-family: var(--font-mono); font-size: 12px; color: var(--muted-2);
+  }
+</style>
