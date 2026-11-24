@@ -1,0 +1,101 @@
+---
+// src/pages/proyectos/[id].astro
+// Plantilla de la página de detalle de cada proyecto.
+// Astro crea una página por cada archivo .md de src/content/proyectos/,
+// usando el nombre del archivo como URL (ej.: inkatun.md → /proyectos/inkatun/).
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const proyectos = (await getCollection('proyectos')).sort((a, b) => a.data.orden - b.data.orden);
+  // Para cada proyecto, también pasamos el siguiente (para el enlace del final)
+  return proyectos.map((proyecto, i) => ({
+    params: { id: proyecto.id },
+    props: { proyecto, siguiente: proyectos[(i + 1) % proyectos.length] },
+  }));
+}
+
+const { proyecto, siguiente } = Astro.props;
+const { titulo, resumen, etiquetas, metricas, repositorio, estado } = proyecto.data;
+// Convierte el Markdown en un componente que se puede insertar
+const { Content } = await render(proyecto);
+---
+<Base title={`${titulo} · José Barra`} description={resumen}>
+  <article class="container project">
+    <a href="/proyectos/" class="back">← Todos los proyectos</a>
+
+    <header class="head">
+      <div class="chips">
+        {etiquetas.map((e) => <span class="chip">{e}</span>)}
+        {estado && <span class="chip estado">{estado}</span>}
+      </div>
+      <h1>{titulo}</h1>
+      <p class="lead">{resumen}</p>
+      {metricas.length > 0 && (
+        <dl class="metrics">
+          {metricas.map((m) => (
+            <div>
+              <dt>{m.etiqueta}</dt>
+              <dd>{m.valor}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+      {repositorio && <a class="btn btn-ghost repo" href={repositorio} target="_blank" rel="noopener">Ver código en GitHub ↗</a>}
+    </header>
+
+    <!-- Cuerpo del caso de estudio (viene del archivo Markdown) -->
+    <div class="prose">
+      <Content />
+    </div>
+
+    {siguiente && siguiente.id !== proyecto.id && (
+      <a href={`/proyectos/${siguiente.id}/`} class="next">
+        <span class="eyebrow">Siguiente proyecto</span>
+        <span class="next-title">{siguiente.data.titulo} →</span>
+      </a>
+    )}
+  </article>
+</Base>
+
+<style>
+  .project { padding-top: 64px; padding-bottom: 120px; display: flex; flex-direction: column; gap: 48px; }
+  .back { color: var(--muted); text-decoration: none; font-size: 14px; padding: 8px 0; align-self: flex-start; }
+  .back:hover { color: var(--text); }
+  .head { display: flex; flex-direction: column; gap: 22px; max-width: 860px; }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .estado { color: var(--accent-2); border-color: #4A3A1E; }
+  h1 { font-size: clamp(40px, 5.5vw, 72px); line-height: 1.02; letter-spacing: -0.03em; }
+  .lead { margin: 0; font-size: 20px; line-height: 1.6; color: var(--muted); }
+  .metrics { display: flex; flex-wrap: wrap; gap: 40px; margin: 8px 0 0; padding: 24px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .metrics div { display: flex; flex-direction: column-reverse; }
+  .metrics dd { margin: 0; font-family: var(--font-display); font-size: 40px; font-weight: 600; color: var(--accent); }
+  .metrics dt { font-size: 14px; color: var(--muted-2); }
+  .repo { align-self: flex-start; }
+
+  .next {
+    display: flex; flex-direction: column; gap: 8px; padding: 32px; text-decoration: none;
+    border: 1px solid var(--line); border-radius: 14px; max-width: 760px;
+  }
+  .next:hover { border-color: var(--line-strong); }
+  .next-title { font-family: var(--font-display); font-size: 28px; font-weight: 600; color: var(--text); }
+
+  /* Estilos del texto del caso de estudio (Markdown).
+     :global hace que se apliquen al HTML generado desde el .md */
+  .prose { max-width: 760px; font-size: 17px; line-height: 1.75; color: var(--text-2); }
+  .prose :global(h2) { font-size: 30px; margin: 56px 0 16px; color: var(--text); }
+  .prose :global(h2:first-child) { margin-top: 0; }
+  .prose :global(h3) { font-size: 21px; margin: 32px 0 10px; color: var(--text); }
+  .prose :global(p) { margin: 0 0 18px; }
+  .prose :global(ul), .prose :global(ol) { padding-left: 22px; margin: 0 0 18px; }
+  .prose :global(li) { margin-bottom: 8px; }
+  .prose :global(strong) { color: var(--text); }
+  .prose :global(code) { font-family: var(--font-mono); font-size: 0.88em; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; }
+  .prose :global(pre) { background: var(--surface) !important; border: 1px solid var(--line); border-radius: 10px; padding: 20px; overflow-x: auto; font-size: 14px; line-height: 1.7; }
+  .prose :global(pre code) { background: none; border: 0; padding: 0; }
+  .prose :global(blockquote) { margin: 0 0 18px; padding: 4px 0 4px 20px; border-left: 3px solid var(--accent); color: var(--text); }
+  .prose :global(table) { width: 100%; border-collapse: collapse; margin: 0 0 18px; font-size: 15px; display: block; overflow-x: auto; }
+  .prose :global(th), .prose :global(td) { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  .prose :global(th) { color: var(--text); font-weight: 600; }
+  .prose :global(img) { max-width: 100%; border-radius: 10px; border: 1px solid var(--line); }
+</style>

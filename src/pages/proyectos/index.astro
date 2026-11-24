@@ -1,0 +1,35 @@
+---
+// src/pages/proyectos/index.astro
+// Listado de todos los proyectos (se genera desde src/content/proyectos/).
+import Base from '../../layouts/Base.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { getCollection } from 'astro:content';
+
+const proyectos = (await getCollection('proyectos')).sort((a, b) => a.data.orden - b.data.orden);
+---
+<Base
+  title="Proyectos · José Barra"
+  description="Casos de estudio de análisis de datos y BI: SQL, Power BI y Python aplicados a problemas reales."
+>
+  <section class="container page">
+    <header class="head">
+      <div class="eyebrow">Proyectos</div>
+      <h1>Casos de estudio</h1>
+      <p>
+        Cada proyecto parte de un problema real: qué se quería saber, con qué datos,
+        cómo se analizó y qué se encontró.
+      </p>
+    </header>
+    <div class="grid reveal">
+      {proyectos.map((p) => <ProjectCard proyecto={p} />)}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .page { padding-top: 96px; padding-bottom: 120px; display: flex; flex-direction: column; gap: 48px; }
+  .head { display: flex; flex-direction: column; gap: 14px; max-width: 720px; }
+  h1 { font-size: clamp(40px, 5.5vw, 72px); line-height: 1.02; letter-spacing: -0.03em; }
+  .head p { margin: 0; font-size: 18px; line-height: 1.6; color: var(--muted); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); gap: 24px; }
+</style>

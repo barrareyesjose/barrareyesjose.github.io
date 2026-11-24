@@ -1,0 +1,143 @@
+---
+// src/pages/index.astro
+// Portada: presentación, animación del proceso, proyectos destacados,
+// stack y contacto.
+import Base from '../layouts/Base.astro';
+import ScrollStory from '../components/ScrollStory.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { getCollection } from 'astro:content';
+import { contacto } from '../data/site.js';
+
+// Proyectos ordenados por el campo "orden"; en la portada se muestran 2
+const proyectos = (await getCollection('proyectos')).sort((a, b) => a.data.orden - b.data.orden);
+const destacados = proyectos.slice(0, 2);
+
+// Herramientas del stack
+const stack = [
+  { nombre: 'SQL', detalle: 'PostgreSQL, MariaDB y DBeaver. JOINs, CTEs, funciones de ventana, vistas y procedimientos almacenados.' },
+  { nombre: 'Power BI', detalle: 'Modelado en estrella y dashboards para seguimiento de indicadores.' },
+  { nombre: 'Python', detalle: 'EDA, tests estadísticos, NLP, modelos predictivos con SHAP y automatización de reportes.' },
+  { nombre: 'Excel', detalle: 'Análisis rápido, tablas dinámicas y reportes para el día a día.' },
+  { nombre: 'Power Automate', detalle: 'Automatización de flujos repetitivos para liberar tiempo de análisis.' },
+];
+---
+<Base>
+  <!-- ===== Portada ===== -->
+  <section class="container hero" id="inicio">
+    <div class="hero-text">
+      <div class="eyebrow">Analista de datos · Business intelligence</div>
+      <h1>Convierto bases de datos en decisiones.</h1>
+      <p>
+        Ingeniero Civil Industrial mención Informática (Universidad de La Frontera).
+        Trabajo con SQL, Power BI y Python para pasar de datos crudos a modelos limpios,
+        KPIs claros e insights que se pueden usar.
+      </p>
+      <div class="actions">
+        <a href="/proyectos/" class="btn btn-primary">Ver proyectos</a>
+        <a href="#proceso" class="btn btn-ghost">Cómo trabajo ↓</a>
+      </div>
+    </div>
+
+    <!-- Ventana de código decorativa -->
+    <div class="code" aria-label="Ejemplo de consulta SQL decorativa">
+      <div class="code-bar">
+        <span></span><span></span><span></span>
+        <em>consulta.sql</em>
+      </div>
+<pre><b>WITH</b> datos <b>AS</b> (
+  <b>SELECT</b> * <b>FROM</b> operaciones
+)
+<b>SELECT</b> insight
+<b>FROM</b> datos
+<b>WHERE</b> decision <b>IS NOT NULL</b>;
+<i>-- 1 fila: lo que importa</i></pre>
+    </div>
+  </section>
+
+  <!-- ===== Animación: del dato al insight ===== -->
+  <ScrollStory />
+
+  <!-- ===== Proyectos destacados ===== -->
+  <section class="container section" id="proyectos">
+    <div class="section-head reveal">
+      <div class="eyebrow">Proyectos</div>
+      <h2 class="section-title">Datos reales, problemas reales.</h2>
+    </div>
+    <div class="grid-2 reveal">
+      {destacados.map((p) => <ProjectCard proyecto={p} />)}
+    </div>
+    <div class="reveal">
+      <a href="/proyectos/" class="btn btn-ghost">Ver todos los proyectos →</a>
+    </div>
+  </section>
+
+  <!-- ===== Stack ===== -->
+  <section class="container section reveal" id="stack">
+    <div class="section-head">
+      <div class="eyebrow">Stack</div>
+      <h2 class="section-title">Herramientas con las que trabajo.</h2>
+    </div>
+    <div class="stack">
+      {stack.map((s) => (
+        <div class="stack-item">
+          <h3>{s.nombre}</h3>
+          <p>{s.detalle}</p>
+        </div>
+      ))}
+    </div>
+    <p class="note">→ En preparación: certificación Microsoft PL-300 (Power BI Data Analyst)</p>
+  </section>
+
+  <!-- ===== Contacto ===== -->
+  <section class="contact" id="contacto">
+    <div class="container contact-inner reveal">
+      <div class="contact-text">
+        <div class="eyebrow">Contacto</div>
+        <h2 class="contact-title">¿Tienes datos que necesitan contar algo?</h2>
+        <p>
+          Busco mi primer rol como Analista de Datos, Analista BI o Business Analyst.
+          Región de La Araucanía, Chile · abierto a remoto e híbrido.
+        </p>
+      </div>
+      <div class="contact-links">
+        {contacto.email && <a class="btn btn-primary" href={`mailto:${contacto.email}`}>{contacto.email}</a>}
+        {contacto.linkedin && <a class="btn btn-ghost" href={contacto.linkedin} target="_blank" rel="noopener">LinkedIn</a>}
+        {contacto.github && <a class={`btn ${contacto.email ? 'btn-ghost' : 'btn-primary'}`} href={contacto.github} target="_blank" rel="noopener">GitHub</a>}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero { padding-top: 120px; padding-bottom: 120px; display: flex; flex-wrap: wrap; gap: 56px; align-items: center; }
+  .hero-text { flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 28px; }
+  .hero h1 { font-size: clamp(44px, 6.4vw, 88px); line-height: 1.02; letter-spacing: -0.03em; }
+  .hero p { margin: 0; font-size: 19px; line-height: 1.6; color: var(--muted); max-width: 620px; }
+  .actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  .code { flex: 1 1 340px; min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .code-bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  .code-bar span { width: 8px; height: 8px; border-radius: 50%; background: var(--line-strong); }
+  .code-bar em { margin-left: 8px; font-style: normal; font-family: var(--font-mono); font-size: 12px; color: var(--muted-2); }
+  .code pre { margin: 0; padding: 22px 20px; font-family: var(--font-mono); font-size: 14px; line-height: 1.8; color: var(--text-2); white-space: pre-wrap; }
+  .code b { color: var(--accent-2); font-weight: 400; }
+  .code i { color: var(--muted-2); font-style: normal; }
+
+  .section { padding-top: 120px; padding-bottom: 40px; display: flex; flex-direction: column; gap: 40px; }
+  .section-head { display: flex; flex-direction: column; gap: 12px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); gap: 24px; }
+
+  .stack { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap: 16px; }
+  .stack-item { border: 1px solid var(--line); border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 10px; }
+  .stack-item h3 { font-size: 22px; }
+  .stack-item p { margin: 0; font-size: 14px; line-height: 1.55; color: var(--muted); }
+  .note { margin: 0; font-family: var(--font-mono); font-size: 13px; color: var(--muted); }
+
+  .contact { margin-top: 80px; border-top: 1px solid #1C2733; }
+  .contact-inner { padding-top: 100px; padding-bottom: 100px; display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between; align-items: flex-end; }
+  .contact-text { display: flex; flex-direction: column; gap: 16px; max-width: 640px; }
+  .contact-title { font-size: clamp(36px, 5vw, 64px); line-height: 1.02; letter-spacing: -0.03em; }
+  .contact-text p { margin: 0; font-size: 17px; line-height: 1.6; color: var(--muted); }
+  .contact-links { display: flex; flex-direction: column; gap: 12px; min-width: 260px; }
+  .contact-links .btn { justify-content: center; }
+</style>
