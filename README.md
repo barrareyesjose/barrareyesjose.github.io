@@ -19,11 +19,3 @@ src/
 ├── data/site.js                 # Datos de contacto (email, LinkedIn, GitHub)
 └── styles/global.css            # Colores, tipografías y estilos compartidos
 ```
-
-
-
-Cuando compres el dominio (por ejemplo `josebarra.cl`):
-
-1. Crea `public/CNAME` con una sola línea: `josebarra.cl`
-2. Cambia `site` en `astro.config.mjs` a `https://josebarra.cl`
-3. Configura el DNS según la [guía de GitHub Pages](https://docs.github.com/es/pages/configuring-a-custom-domain-for-your-github-pages-site).
