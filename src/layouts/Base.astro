@@ -5,15 +5,18 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import FloatingBackground from '../components/FloatingBackground.astro';
 
 // Propiedades que recibe la plantilla (con valores por defecto)
 interface Props {
   title?: string;
   description?: string;
+  home?: boolean; // true solo en la portada: fondo negro + íconos flotando
 }
 const {
   title = 'José Barra · Analista de Datos y BI',
   description = 'Portafolio de análisis de datos y business intelligence de José Barra: SQL, Power BI y Python.',
+  home = false,
 } = Astro.props;
 
 // URL canónica de la página actual (usa `site` de astro.config.mjs)
@@ -44,7 +47,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
   />
 </head>
-<body>
+<body class={home ? 'home' : undefined}>
+  <!-- Fondo animado (solo en la portada) -->
+  {home && <FloatingBackground />}
   <a class="skip" href="#contenido">Saltar al contenido</a>
   <Header />
   <main id="contenido">

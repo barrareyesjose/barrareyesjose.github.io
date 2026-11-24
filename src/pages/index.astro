@@ -1,9 +1,8 @@
 ---
 // src/pages/index.astro
-// Portada: presentación, animación del proceso, proyectos destacados,
-// stack y contacto.
+// Portada: presentación, proyectos destacados, stack y contacto.
+// El fondo negro con íconos flotando se activa con <Base home>.
 import Base from '../layouts/Base.astro';
-import ScrollStory from '../components/ScrollStory.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import { getCollection } from 'astro:content';
 import { contacto } from '../data/site.js';
@@ -21,7 +20,7 @@ const stack = [
   { nombre: 'Power Automate', detalle: 'Automatización de flujos repetitivos para liberar tiempo de análisis.' },
 ];
 ---
-<Base>
+<Base home>
   <!-- ===== Portada ===== -->
   <section class="container hero" id="inicio">
     <div class="hero-text">
@@ -34,7 +33,7 @@ const stack = [
       </p>
       <div class="actions">
         <a href="/proyectos/" class="btn btn-primary">Ver proyectos</a>
-        <a href="#proceso" class="btn btn-ghost">Cómo trabajo ↓</a>
+        <a href="#contacto" class="btn btn-ghost">Contacto</a>
       </div>
     </div>
 
@@ -53,9 +52,6 @@ const stack = [
 <i>-- 1 fila: lo que importa</i></pre>
     </div>
   </section>
-
-  <!-- ===== Animación: del dato al insight ===== -->
-  <ScrollStory />
 
   <!-- ===== Proyectos destacados ===== -->
   <section class="container section" id="proyectos">

@@ -1,7 +1,7 @@
 ---
 // src/components/Header.astro
 // Barra de navegación fija con barra de progreso de lectura.
-// Los enlaces usan rutas absolutas ("/#proceso") para que funcionen
+// Los enlaces usan rutas absolutas ("/#stack") para que funcionen
 // también desde las páginas de proyectos.
 const path = Astro.url.pathname;
 // Marca "Proyectos" como activo cuando estamos dentro de /proyectos/
@@ -20,7 +20,6 @@ const enProyectos = path.startsWith('/proyectos');
       José Barra
     </a>
     <div class="links">
-      <a href="/#proceso">Proceso</a>
       <a href="/proyectos/" aria-current={enProyectos ? 'page' : undefined}>Proyectos</a>
       <a href="/#stack">Stack</a>
       <a href="/#contacto" class="btn btn-primary cta">Contacto</a>
@@ -50,8 +49,8 @@ const enProyectos = path.startsWith('/proyectos');
   .progress { height: 2px; background: var(--surface-2); }
   .progress-bar { height: 2px; width: 0; background: var(--accent); }
 
-  /* En pantallas angostas se ocultan "Proceso" y "Stack" para que quepa */
+  /* En pantallas angostas se oculta "Stack" para que quepa */
   @media (max-width: 560px) {
-    .links a[href='/#proceso'], .links a[href='/#stack'] { display: none; }
+    .links a[href='/#stack'] { display: none; }
   }
 </style>
