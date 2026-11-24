@@ -138,7 +138,16 @@ const stack = [
   .stack-item { background: #0A0D11; transition: border-color .2s ease, transform .2s ease; }
   .stack-item:hover { border-color: var(--line-strong); transform: translateY(-2px); }
   .stack-logos { display: flex; align-items: center; gap: 12px; height: 40px; margin-bottom: 4px; }
-  .stack-logos .logo { display: flex; height: 36px; }
+  .stack-logos .logo {
+    display: flex; height: 36px;
+    transform-origin: left center; /* crece hacia la derecha, sin salirse de la tarjeta */
+    transition: transform .25s cubic-bezier(.34, 1.56, .64, 1); /* leve rebote al agrandarse */
+  }
+  /* Al pasar el mouse por la tarjeta, el ícono se agranda un poco */
+  .stack-item:hover .logo { transform: scale(1.22); }
+  @media (prefers-reduced-motion: reduce) {
+    .stack-logos .logo { transition: none; }
+  }
   .stack-logos :global(svg) { height: 36px; width: auto; display: block; }
   .stack-item h3 { font-size: 22px; }
   .stack-item p { margin: 0; font-size: 14px; line-height: 1.55; color: var(--muted); }
