@@ -15,6 +15,8 @@ const destacados = proyectos.slice(0, 2);
 // Íconos de los botones de contacto (un solo color: toman el color del texto del botón)
 const iconoGithub = svgLogo('simple-icons', 'github', undefined, 20);
 const iconoLinkedin = svgLogo('simple-icons', 'linkedin', undefined, 20);
+// Sobre de correo (ícono de trazo simple)
+const iconoCorreo = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="m3 6.5 9 6.5 9-6.5"/></svg>';
 
 // Herramientas del stack, con sus logos oficiales (ver src/data/logos.js).
 const stack = [
@@ -110,21 +112,32 @@ const stack = [
         </p>
       </div>
       <div class="contact-links">
-        <!-- El primer botón disponible (correo o LinkedIn) va destacado; el resto, con borde.
-             Un botón solo aparece si su dato está completo en src/data/site.js -->
-        {contacto.email && <a class="btn btn-primary" href={`mailto:${contacto.email}`}>{contacto.email}</a>}
-        {contacto.linkedin && (
-          <a class={`btn ${contacto.email ? 'btn-ghost' : 'btn-primary'}`} href={contacto.linkedin} target="_blank" rel="noopener">
+        <!-- Correo (destacado), LinkedIn y GitHub. Los datos vienen de src/data/site.js -->
+        {contacto.email && (
+          <a class="btn btn-primary" href={`mailto:${contacto.email}`} title={contacto.email}>
+            <span class="btn-icon btn-icon-line" set:html={iconoCorreo} />
+            Enviar correo
+          </a>
+        )}
+        {contacto.linkedin ? (
+          <a class="btn btn-ghost" href={contacto.linkedin} target="_blank" rel="noopener">
             <span class="btn-icon" set:html={iconoLinkedin} />
             LinkedIn
           </a>
+        ) : (
+          /* Sin link todavía: botón visible pero desactivado */
+          <span class="btn btn-ghost is-disabled" aria-disabled="true" title="Próximamente">
+            <span class="btn-icon" set:html={iconoLinkedin} />
+            LinkedIn
+          </span>
         )}
         {contacto.github && (
-          <a class={`btn ${contacto.email || contacto.linkedin ? 'btn-ghost' : 'btn-primary'}`} href={contacto.github} target="_blank" rel="noopener">
+          <a class="btn btn-ghost" href={contacto.github} target="_blank" rel="noopener">
             <span class="btn-icon" set:html={iconoGithub} />
             GitHub
           </a>
         )}
+        {contacto.email && <span class="mail-text">{contacto.email}</span>}
       </div>
     </div>
   </section>
@@ -176,7 +189,14 @@ const stack = [
   .contact-text p { margin: 0; font-size: 17px; line-height: 1.6; color: var(--muted); }
   .contact-links { display: flex; flex-direction: column; gap: 12px; min-width: 260px; }
   .contact-links .btn { justify-content: center; gap: 10px; }
+  .contact-links .btn-ghost { background: var(--bg); } /* fondo sólido: los íconos flotantes no se ven a través */
   /* Ícono dentro del botón: hereda el color del texto (currentColor) */
   .btn-icon { display: flex; }
   .btn-icon :global(svg) { height: 20px; width: 20px; fill: currentColor; }
+  .btn-icon-line :global(svg) { fill: none; } /* el sobre es de trazo, sin relleno */
+  /* Botón desactivado (LinkedIn mientras no hay link) */
+  .is-disabled { color: #5B6875; border-color: var(--line); cursor: not-allowed; } /* atenuado sin transparencia */
+  .is-disabled:hover { transform: none; color: #5B6875; border-color: var(--line); }
+  /* Dirección de correo visible bajo los botones, para copiarla fácil */
+  .mail-text { text-align: center; font-family: var(--font-mono); font-size: 13px; color: var(--muted); user-select: all; }
 </style>
