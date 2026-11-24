@@ -12,6 +12,10 @@ import { svgLogo, svgSqlDatabase } from '../data/logos.js';
 const proyectos = (await getCollection('proyectos')).sort((a, b) => a.data.orden - b.data.orden);
 const destacados = proyectos.slice(0, 2);
 
+// Íconos de los botones de contacto (un solo color: toman el color del texto del botón)
+const iconoGithub = svgLogo('simple-icons', 'github', undefined, 20);
+const iconoLinkedin = svgLogo('simple-icons', 'linkedin', undefined, 20);
+
 // Herramientas del stack, con sus logos oficiales (ver src/data/logos.js).
 const stack = [
   { nombre: 'SQL', logos: [{ svg: svgSqlDatabase, alt: 'Base de datos SQL' }],
@@ -106,9 +110,21 @@ const stack = [
         </p>
       </div>
       <div class="contact-links">
+        <!-- El primer botón disponible (correo o LinkedIn) va destacado; el resto, con borde.
+             Un botón solo aparece si su dato está completo en src/data/site.js -->
         {contacto.email && <a class="btn btn-primary" href={`mailto:${contacto.email}`}>{contacto.email}</a>}
-        {contacto.linkedin && <a class="btn btn-ghost" href={contacto.linkedin} target="_blank" rel="noopener">LinkedIn</a>}
-        {contacto.github && <a class={`btn ${contacto.email ? 'btn-ghost' : 'btn-primary'}`} href={contacto.github} target="_blank" rel="noopener">GitHub</a>}
+        {contacto.linkedin && (
+          <a class={`btn ${contacto.email ? 'btn-ghost' : 'btn-primary'}`} href={contacto.linkedin} target="_blank" rel="noopener">
+            <span class="btn-icon" set:html={iconoLinkedin} />
+            LinkedIn
+          </a>
+        )}
+        {contacto.github && (
+          <a class={`btn ${contacto.email || contacto.linkedin ? 'btn-ghost' : 'btn-primary'}`} href={contacto.github} target="_blank" rel="noopener">
+            <span class="btn-icon" set:html={iconoGithub} />
+            GitHub
+          </a>
+        )}
       </div>
     </div>
   </section>
@@ -159,5 +175,8 @@ const stack = [
   .contact-title { font-size: clamp(36px, 5vw, 64px); line-height: 1.02; letter-spacing: -0.03em; }
   .contact-text p { margin: 0; font-size: 17px; line-height: 1.6; color: var(--muted); }
   .contact-links { display: flex; flex-direction: column; gap: 12px; min-width: 260px; }
-  .contact-links .btn { justify-content: center; }
+  .contact-links .btn { justify-content: center; gap: 10px; }
+  /* Ícono dentro del botón: hereda el color del texto (currentColor) */
+  .btn-icon { display: flex; }
+  .btn-icon :global(svg) { height: 20px; width: 20px; fill: currentColor; }
 </style>

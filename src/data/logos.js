@@ -16,16 +16,17 @@ const sets = { logos, 'vscode-icons': vscode, 'simple-icons': simple };
  * @param {string} set    nombre del set ('logos', 'vscode-icons', 'simple-icons')
  * @param {string} nombre nombre del ícono dentro del set
  * @param {string} [color] color para íconos de un solo color (los de simple-icons)
+ * @param {number} [alto]  alto en píxeles (36 por defecto)
  */
-export function svgLogo(set, nombre, color) {
+export function svgLogo(set, nombre, color, alto = 36) {
   const data = sets[set];
   const icono = data.icons[nombre];
   if (!icono) throw new Error(`No existe el ícono ${set}:${nombre}`); // error claro al compilar
   const ancho = icono.width ?? data.width ?? 16;
-  const alto = icono.height ?? data.height ?? 16;
+  const altoIcono = icono.height ?? data.height ?? 16;
   let cuerpo = icono.body;
   if (color) cuerpo = cuerpo.replaceAll('currentColor', color);
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${icono.left ?? 0} ${icono.top ?? 0} ${ancho} ${alto}" height="36" aria-hidden="true">${cuerpo}</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${icono.left ?? 0} ${icono.top ?? 0} ${ancho} ${altoIcono}" height="${alto}" aria-hidden="true">${cuerpo}</svg>`;
 }
 
 // Ícono de base de datos SQL (estilo Azure SQL Database).
