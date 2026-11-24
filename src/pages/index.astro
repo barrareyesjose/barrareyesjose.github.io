@@ -6,18 +6,25 @@ import Base from '../layouts/Base.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import { getCollection } from 'astro:content';
 import { contacto } from '../data/site.js';
+import { svgLogo } from '../data/logos.js';
 
 // Proyectos ordenados por el campo "orden"; en la portada se muestran 2
 const proyectos = (await getCollection('proyectos')).sort((a, b) => a.data.orden - b.data.orden);
 const destacados = proyectos.slice(0, 2);
 
-// Herramientas del stack
+// Herramientas del stack, con sus logos oficiales (ver src/data/logos.js).
+// SQL no tiene logo propio, así que se muestran los motores con los que trabajo.
 const stack = [
-  { nombre: 'SQL', detalle: 'PostgreSQL, MariaDB y DBeaver. JOINs, CTEs, funciones de ventana, vistas y procedimientos almacenados.' },
-  { nombre: 'Power BI', detalle: 'Modelado en estrella y dashboards para seguimiento de indicadores.' },
-  { nombre: 'Python', detalle: 'EDA, tests estadísticos, NLP, modelos predictivos con SHAP y automatización de reportes.' },
-  { nombre: 'Excel', detalle: 'Análisis rápido, tablas dinámicas y reportes para el día a día.' },
-  { nombre: 'Power Automate', detalle: 'Automatización de flujos repetitivos para liberar tiempo de análisis.' },
+  { nombre: 'SQL', logos: [{ svg: svgLogo('logos', 'postgresql'), alt: 'PostgreSQL' }, { svg: svgLogo('logos', 'mariadb-icon'), alt: 'MariaDB' }],
+    detalle: 'PostgreSQL, MariaDB y DBeaver. JOINs, CTEs, funciones de ventana, vistas y procedimientos almacenados.' },
+  { nombre: 'Power BI', logos: [{ svg: svgLogo('logos', 'microsoft-power-bi'), alt: 'Power BI' }],
+    detalle: 'Modelado en estrella y dashboards para seguimiento de indicadores.' },
+  { nombre: 'Python', logos: [{ svg: svgLogo('logos', 'python'), alt: 'Python' }],
+    detalle: 'EDA, tests estadísticos, NLP, modelos predictivos con SHAP y automatización de reportes.' },
+  { nombre: 'Excel', logos: [{ svg: svgLogo('vscode-icons', 'file-type-excel'), alt: 'Microsoft Excel' }],
+    detalle: 'Análisis rápido, tablas dinámicas y reportes para el día a día.' },
+  { nombre: 'Power Automate', logos: [{ svg: svgLogo('simple-icons', 'powerautomate', '#0066FF'), alt: 'Power Automate' }],
+    detalle: 'Automatización de flujos repetitivos para liberar tiempo de análisis.' },
 ];
 ---
 <Base home>
@@ -76,6 +83,10 @@ const stack = [
     <div class="stack">
       {stack.map((s) => (
         <div class="stack-item">
+          <!-- Logos oficiales (alto fijo; el ancho se ajusta a cada logo) -->
+          <div class="stack-logos">
+            {s.logos.map((l) => <span class="logo" role="img" aria-label={l.alt} title={l.alt} set:html={l.svg} />)}
+          </div>
           <h3>{s.nombre}</h3>
           <p>{s.detalle}</p>
         </div>
@@ -125,6 +136,11 @@ const stack = [
 
   .stack { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap: 16px; }
   .stack-item { border: 1px solid var(--line); border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 10px; }
+  .stack-item { background: #0A0D11; transition: border-color .2s ease, transform .2s ease; }
+  .stack-item:hover { border-color: var(--line-strong); transform: translateY(-2px); }
+  .stack-logos { display: flex; align-items: center; gap: 12px; height: 40px; margin-bottom: 4px; }
+  .stack-logos .logo { display: flex; height: 36px; }
+  .stack-logos :global(svg) { height: 36px; width: auto; display: block; }
   .stack-item h3 { font-size: 22px; }
   .stack-item p { margin: 0; font-size: 14px; line-height: 1.55; color: var(--muted); }
   .note { margin: 0; font-family: var(--font-mono); font-size: 13px; color: var(--muted); }

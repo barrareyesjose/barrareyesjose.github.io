@@ -9,6 +9,9 @@
     "preview": "astro preview"
   },
   "dependencies": {
+    "@iconify-json/logos": "1.2.20",
+    "@iconify-json/simple-icons": "1.2.103",
+    "@iconify-json/vscode-icons": "1.2.100",
     "astro": "7.4.13"
   }
 }
