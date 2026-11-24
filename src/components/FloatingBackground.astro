@@ -1,9 +1,10 @@
 ---
 // src/components/FloatingBackground.astro
-// Fondo animado: bases de datos, carpetas y archivos que flotan hacia arriba.
+// Fondo animado: bases de datos, nubes (fuentes en la nube), carpetas y
+// archivos que flotan hacia arriba.
 //
 // Cómo funciona:
-//  - Se generan ~26 íconos SVG con posiciones, tamaños y velocidades
+//  - Se generan ~30 íconos SVG con posiciones, tamaños y velocidades
 //    "aleatorias" pero fijas (usamos una semilla, así el sitio siempre se
 //    ve igual y no cambia entre compilaciones).
 //  - Hay 3 capas de profundidad: lejos (chicos, tenues, lentos),
@@ -28,13 +29,13 @@ const rnd = crearAleatorio(2026);
 const entre = (min: number, max: number) => min + (max - min) * rnd();
 
 // Tipos de ícono que pueden aparecer (los repetidos aparecen más seguido)
-const tipos = ['db', 'folder', 'file', 'sql', 'csv', 'db', 'folder', 'pbix', 'file', 'py'];
+const tipos = ['db', 'folder', 'file', 'sql', 'csv', 'db', 'folder', 'pbix', 'file', 'py', 'cloud', 'cloud-db', 'cloud-up', 'cloud', 'cloud-db', 'cloud-up'];
 
 // Capas de profundidad: [cantidad, tamaño mín, tamaño máx, opacidad, duración mín, duración máx]
 const capas = [
-  { n: 10, sMin: 22, sMax: 34, o: 0.13, dMin: 70, dMax: 95 },  // lejos
-  { n: 10, sMin: 40, sMax: 56, o: 0.2, dMin: 48, dMax: 65 }, // medio
-  { n: 6, sMin: 64, sMax: 88, o: 0.28, dMin: 32, dMax: 44 },  // cerca
+  { n: 12, sMin: 22, sMax: 34, o: 0.13, dMin: 70, dMax: 95 },  // lejos
+  { n: 11, sMin: 40, sMax: 56, o: 0.2, dMin: 48, dMax: 65 }, // medio
+  { n: 7, sMin: 64, sMax: 88, o: 0.28, dMin: 32, dMax: 44 },  // cerca
 ];
 
 // Arma la lista de íconos con todas sus propiedades
@@ -72,6 +73,18 @@ const etiquetas: Record<string, string> = { sql: 'SQL', csv: 'CSV', pbix: 'PBIX'
         {it.tipo === 'db' && (
           // Base de datos: cilindro de 3 niveles
           <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3" /><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5" /><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" /></svg>
+        )}
+        {it.tipo === 'cloud' && (
+          // Nube: fuente de datos en la nube
+          <svg viewBox="0 0 24 24"><path d="M17.5 19H8.5a5 5 0 1 1 1.2-9.86A6 6 0 0 1 21 11.6 3.8 3.8 0 0 1 17.5 19z" /></svg>
+        )}
+        {it.tipo === 'cloud-db' && (
+          // Nube con una base de datos dentro (base de datos en la nube)
+          <svg viewBox="0 0 24 24"><path d="M17.5 19H8.5a5 5 0 1 1 1.2-9.86A6 6 0 0 1 21 11.6 3.8 3.8 0 0 1 17.5 19z" /><ellipse cx="13" cy="12.4" rx="2.8" ry="1" /><path d="M10.2 12.4v2.6c0 .55 1.25 1 2.8 1s2.8-.45 2.8-1v-2.6" /></svg>
+        )}
+        {it.tipo === 'cloud-up' && (
+          // Nube con flecha: datos que se cargan / sincronizan
+          <svg viewBox="0 0 24 24"><path d="M17.5 19H8.5a5 5 0 1 1 1.2-9.86A6 6 0 0 1 21 11.6 3.8 3.8 0 0 1 17.5 19z" /><path d="M13 16.5v-5M10.8 13.6 13 11.4l2.2 2.2" /></svg>
         )}
         {it.tipo === 'folder' && (
           // Carpeta
