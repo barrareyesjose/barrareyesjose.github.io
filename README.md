@@ -25,25 +25,7 @@ src/
 └── styles/global.css            # Colores, tipografías y estilos compartidos
 ```
 
-## Agregar un proyecto
 
-1. Crea `src/content/proyectos/mi-proyecto.md` copiando el encabezado de uno existente.
-2. Escribe el caso de estudio en Markdown (contexto → problema → datos → análisis → hallazgos).
-3. Sube el cambio a `main`. GitHub Actions publica el sitio solo en 1–2 minutos.
-
-La página queda en `/proyectos/mi-proyecto/`.
-
-## Trabajar en local
-
-Requiere Node.js 22.23 o superior.
-
-```bash
-npm install
-npm run dev      # servidor local en http://localhost:4321
-npm run build    # genera el sitio en dist/
-```
-
-## Dominio propio
 
 Cuando compres el dominio (por ejemplo `josebarra.cl`):
 
