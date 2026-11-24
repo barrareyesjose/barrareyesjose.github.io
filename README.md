@@ -1,8 +1,3 @@
-# barrareyesjose.github.io
-
-Portafolio de análisis de datos y business intelligence de José Barra.
-Sitio estático hecho con [Astro](https://astro.build) y publicado en GitHub Pages.
-
 **Sitio:** https://barrareyesjose.github.io
 
 ## Estructura
