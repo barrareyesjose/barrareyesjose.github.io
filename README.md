@@ -43,11 +43,3 @@ npm install
 npm run dev      # servidor local en http://localhost:4321
 npm run build    # genera el sitio en dist/
 ```
-
-## Dominio propio
-
-Cuando compres el dominio (por ejemplo `josebarra.cl`):
-
-1. Crea `public/CNAME` con una sola línea: `josebarra.cl`
-2. Cambia `site` en `astro.config.mjs` a `https://josebarra.cl`
-3. Configura el DNS según la [guía de GitHub Pages](https://docs.github.com/es/pages/configuring-a-custom-domain-for-your-github-pages-site).
