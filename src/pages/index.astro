@@ -50,7 +50,7 @@ const stack = [
       </div>
     </div>
 
-    <!-- Foto de José completa, con marco -->
+    <!-- Foto de José completa, con halo celeste -->
     <figure class="photo">
       <img src={fotoJose} alt="José Barra presentando un proyecto frente a una audiencia" width="640" height="640" />
     </figure>
@@ -141,30 +141,28 @@ const stack = [
   .hero p { margin: 0; font-size: 19px; line-height: 1.6; color: var(--muted); max-width: 620px; }
   .actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
-  /* Foto de la portada: imagen completa con marco.
-     El marco es un contorno celeste desplazado detrás de la foto (::before)
-     que se acerca un poco al pasar el mouse. */
-  .photo { position: relative; flex: 1 1 300px; max-width: 400px; margin: 0 auto 16px; }
-  .photo::before {
-    content: ''; position: absolute; inset: 0; z-index: 0;
-    border: 1.5px solid var(--accent); border-radius: 16px; opacity: .75;
-    transform: translate(16px, 16px);
-    transition: transform .35s ease;
-  }
-  .photo:hover::before { transform: translate(8px, 8px); }
+  /* Foto de la portada: imagen completa con halo.
+     El halo son varias sombras celestes difuminadas alrededor de la foto
+     (box-shadow), que se intensifican un poco al pasar el mouse. */
+  .photo { position: relative; flex: 1 1 300px; max-width: 400px; margin: 0 auto; }
   .photo img {
-    position: relative; z-index: 1;
     display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover;
-    border-radius: 16px; border: 1px solid var(--line-strong);
-    background: var(--bg);
+    border-radius: 16px;
+    border: 1px solid rgba(92, 200, 255, .45);          /* borde celeste suave */
+    box-shadow:
+      0 0 24px rgba(92, 200, 255, .30),                 /* brillo cercano */
+      0 0 64px rgba(92, 200, 255, .18),                 /* brillo medio */
+      0 0 120px rgba(92, 200, 255, .10);                /* brillo lejano */
+    transition: box-shadow .4s ease;
   }
-  /* En pantallas angostas el marco se desplaza menos, para no tocar el borde */
-  @media (max-width: 560px) {
-    .photo { margin-right: 10px; }
-    .photo::before { transform: translate(10px, 10px); }
+  .photo:hover img {
+    box-shadow:
+      0 0 28px rgba(92, 200, 255, .42),
+      0 0 80px rgba(92, 200, 255, .24),
+      0 0 150px rgba(92, 200, 255, .14);
   }
   @media (prefers-reduced-motion: reduce) {
-    .photo::before { transition: none; }
+    .photo img { transition: none; }
   }
 
   .section { padding-top: 120px; padding-bottom: 40px; display: flex; flex-direction: column; gap: 40px; }
